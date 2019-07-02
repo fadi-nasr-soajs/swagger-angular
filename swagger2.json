@@ -1,0 +1,482 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "The microservice is in charge of user authentication (login, logout, PIN, change password, refresh token, etc).\n\nSwagger json genereated using https://goswagger.io/generate/spec.html\nswagger -q generate spec -m -o swagger.json",
+    "title": "Rockspoon Authentication Microservice",
+    "version": "0.0.1"
+  },
+  "host": "localhost:6002",
+  "basePath": "/",
+  "paths": {
+    "/user/login": {
+      "post": {
+        "description": "login into account",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "AuthHandler"
+        ],
+        "operationId": "login",
+        "parameters": [
+          {
+            "name": "LoginRequest",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "login response",
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          }
+        }
+      }
+    },
+    "/user/login/refresh": {
+      "post": {
+        "description": "refresh API access token",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "AuthHandler"
+        ],
+        "operationId": "refreshToken",
+        "parameters": [
+          {
+            "name": "RefreshTokenRequest",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "refreshToken response",
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "description": "logout from account",
+        "tags": [
+          "AuthHandler"
+        ],
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "empty response"
+          }
+        }
+      }
+    },
+    "/user/password/reset": {
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "description": "reset account password",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "AuthHandler"
+        ],
+        "operationId": "resetPassword",
+        "parameters": [
+          {
+            "name": "ResetInfo",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ResetInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "resetPassword response",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        }
+      }
+    },
+    "/user/pin": {
+      "post": {
+        "description": "login into account by pin",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "AuthHandler"
+        ],
+        "operationId": "pinLogin",
+        "parameters": [
+          {
+            "name": "PinRequest",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PinRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "pinLogin response",
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          }
+        }
+      }
+    },
+    "/user/pin/refresh": {
+      "post": {
+        "description": "refresh API access token by pin",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "AuthHandler"
+        ],
+        "operationId": "pinRefreshToken",
+        "parameters": [
+          {
+            "name": "PinRequest",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PinRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "pinRefreshToken response",
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          }
+        }
+      }
+    },
+    "/user/{username}/password/forgot": {
+      "get": {
+        "description": "send reset email by user profile name",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "AuthHandler"
+        ],
+        "operationId": "forgotPassword",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "username",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "forgotPassword response",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Details": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Code"
+        },
+        "message": {
+          "type": "string",
+          "x-go-name": "Message"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.authentication-ms/model"
+    },
+    "ErrorPasswordResponse": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "x-go-name": "GroupID"
+        },
+        "errors": {
+          "type": "object",
+          "properties": {
+            "codes": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "x-go-name": "Codes"
+            },
+            "details": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "integer",
+                    "format": "int64",
+                    "x-go-name": "Code"
+                  },
+                  "message": {
+                    "type": "string",
+                    "x-go-name": "Message"
+                  }
+                }
+              },
+              "x-go-name": "Details"
+            }
+          },
+          "x-go-name": "Errors"
+        },
+        "result": {
+          "type": "boolean",
+          "x-go-name": "Result"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.authentication-ms/model"
+    },
+    "LoginRequest": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string",
+          "x-go-name": "Password"
+        },
+        "refreshToken": {
+          "type": "string",
+          "x-go-name": "RefreshToken"
+        },
+        "username": {
+          "type": "string",
+          "x-go-name": "Username"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.authentication-ms/model"
+    },
+    "LoginResponse": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string",
+          "x-go-name": "AccessToken"
+        },
+        "errors": {
+          "type": "object",
+          "properties": {
+            "codes": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "x-go-name": "Codes"
+            },
+            "details": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Details"
+              },
+              "x-go-name": "Details"
+            }
+          },
+          "x-go-name": "Errors"
+        },
+        "expires_in": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ExpiresIn"
+        },
+        "refresh_token": {
+          "type": "string",
+          "x-go-name": "RefreshToken"
+        },
+        "result": {
+          "type": "boolean",
+          "x-go-name": "Result"
+        },
+        "token_type": {
+          "type": "string",
+          "x-go-name": "TokenType"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.authentication-ms/model"
+    },
+    "PinRequest": {
+      "type": "object",
+      "properties": {
+        "pin": {
+          "type": "string",
+          "x-go-name": "Pin"
+        },
+        "refreshToken": {
+          "type": "string",
+          "x-go-name": "RefreshToken"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.authentication-ms/model"
+    },
+    "ResetInfo": {
+      "type": "object",
+      "properties": {
+        "confirmation": {
+          "type": "string",
+          "x-go-name": "Confirmation"
+        },
+        "password": {
+          "type": "string",
+          "x-go-name": "Password"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.authentication-ms/model"
+    },
+    "Response": {
+      "type": "object",
+      "title": "Response represents response for reset handlers.",
+      "properties": {
+        "result": {
+          "type": "boolean",
+          "x-go-name": "Result"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.authentication-ms/handler"
+    },
+    "SoaLogin": {
+      "type": "object",
+      "properties": {
+        "grant_type": {
+          "type": "string",
+          "x-go-name": "GrantType"
+        },
+        "password": {
+          "type": "string",
+          "x-go-name": "Password"
+        },
+        "refresh_token": {
+          "type": "string",
+          "x-go-name": "RefreshToken"
+        },
+        "username": {
+          "type": "string",
+          "x-go-name": "Username"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.authentication-ms/model"
+    },
+    "SoaPin": {
+      "type": "object",
+      "properties": {
+        "grant_type": {
+          "type": "string",
+          "x-go-name": "GrantType"
+        },
+        "pin": {
+          "type": "string",
+          "x-go-name": "Pin"
+        },
+        "refresh_token": {
+          "type": "string",
+          "x-go-name": "RefreshToken"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.authentication-ms/model"
+    },
+    "Token": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string",
+          "x-go-name": "AccessToken"
+        },
+        "expires_in": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ExpiresIn"
+        },
+        "refresh_token": {
+          "type": "string",
+          "x-go-name": "RefreshToken"
+        },
+        "token_type": {
+          "type": "string",
+          "x-go-name": "TokenType"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.cor.authentication-ms/model"
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "token",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ]
+}
